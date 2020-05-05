@@ -1470,7 +1470,7 @@ def setup():
   
 #  global log
   
-  print "NTP: " + getNTPTime()
+  #print "NTP: " + getNTPTime()
   
   # initialize the randon number generator
   random.seed()
