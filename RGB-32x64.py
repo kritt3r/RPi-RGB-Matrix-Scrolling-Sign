@@ -147,6 +147,7 @@ from samplebase import SampleBase
 from rgbmatrix import graphics
 from smbus import SMBus
 from string import capwords
+from bs4 import BeautifulSoup
 
 # sensor data variables
 lastPressure = 0
@@ -372,7 +373,7 @@ def readOptions(filename):
 # Create a random color
 def randomColor():
   min = 64      # higher numbers yield brighter colors, max is 255
-  max = 150     # low numbers yield dimmer colors.
+  max = 100     # low numbers yield dimmer colors.
   
   r = random.randint(min, max)
   g = random.randint(min, max)
@@ -649,7 +650,6 @@ def parseWeather(line, id):
   wd = []
   wl = line.split(',')
   for l in wl:
-    print('\nWeather Output:\n%s' % l)
     pos = l.find('description":"')
     if pos > 0 and len(weather) == 0:
       weather = capwords(l[l.find(':') + 2:len(l) - 1])
@@ -1389,7 +1389,7 @@ class RunText(SampleBase):
     offscreen_canvas = self.matrix.CreateFrameCanvas()
     font = graphics.Font()
     # change the 7x13.bdf filename to use a different font.
-    font.LoadFont("fonts/7x13.bdf")
+    font.LoadFont("fonts/6x10.bdf")
 
     # default colors    
     topColor = graphics.Color(255, 255, 0)
@@ -1407,7 +1407,7 @@ class RunText(SampleBase):
         topColor = topList[topIndex][0]
         msg = topList[topIndex][1]
       else:
-        msg = 'Please Wait for Raspberry Pi to boot'
+        msg = 'Coming online shortly'
         
       # determine the pixel length of the message
       msglen = graphics.DrawText(offscreen_canvas, font, pos1, Row1, topColor, msg)
@@ -1430,7 +1430,7 @@ class RunText(SampleBase):
         bottomColor = bottomList[bottomIndex][0]
         msg = bottomList[bottomIndex][1]
       else:
-        msg = 'Please Wait while I gather information from the Internet'
+        msg = 'Hold the fuck up, someone unplugged the internet.'
         
       # determine the pixel length of the message
       msglen = graphics.DrawText(offscreen_canvas, font, pos2, Row2, bottomColor, msg)
