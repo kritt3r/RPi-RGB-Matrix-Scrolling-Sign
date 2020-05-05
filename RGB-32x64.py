@@ -138,6 +138,7 @@ import socket
 import struct
 import string
 import random
+import re
 
 from HTMLParser import HTMLParser
 from xml.dom import minidom
@@ -229,54 +230,54 @@ digH5 = 0
 digH6 = 0
 
 #===== BME280 Register names, do not modify =====
-BME280_DIG_T1_LSB_REG =	0x88
-BME280_DIG_T1_MSB_REG =	0x89
-BME280_DIG_T2_LSB_REG =	0x8A
-BME280_DIG_T2_MSB_REG =	0x8B
-BME280_DIG_T3_LSB_REG =	0x8C
-BME280_DIG_T3_MSB_REG =	0x8D
-BME280_DIG_P1_LSB_REG =	0x8E
-BME280_DIG_P1_MSB_REG =	0x8F
-BME280_DIG_P2_LSB_REG =	0x90
-BME280_DIG_P2_MSB_REG =	0x91
-BME280_DIG_P3_LSB_REG =	0x92
-BME280_DIG_P3_MSB_REG =	0x93
-BME280_DIG_P4_LSB_REG =	0x94
-BME280_DIG_P4_MSB_REG =	0x95
-BME280_DIG_P5_LSB_REG =	0x96
-BME280_DIG_P5_MSB_REG =	0x97
-BME280_DIG_P6_LSB_REG =	0x98
-BME280_DIG_P6_MSB_REG =	0x99
-BME280_DIG_P7_LSB_REG =	0x9A
-BME280_DIG_P7_MSB_REG =	0x9B
-BME280_DIG_P8_LSB_REG =	0x9C
-BME280_DIG_P8_MSB_REG =	0x9D
-BME280_DIG_P9_LSB_REG =	0x9E
-BME280_DIG_P9_MSB_REG =	0x9F
-BME280_DIG_H1_REG           =	0xA1
-BME280_CHIP_ID_REG          =	0xD0 # Chip ID
-BME280_RST_REG              =	0xE0 # Softreset Reg
-BME280_DIG_H2_LSB_REG       =	0xE1
-BME280_DIG_H2_MSB_REG       =	0xE2
-BME280_DIG_H3_REG           =	0xE3
-BME280_DIG_H4_MSB_REG       =	0xE4
-BME280_DIG_H4_LSB_REG       =	0xE5
-BME280_DIG_H5_MSB_REG       =	0xE6
-BME280_DIG_H6_REG           =	0xE7
-BME280_CTRL_HUMIDITY_REG    =	0xF2 # Ctrl Humidity Reg
-BME280_STAT_REG             =	0xF3 # Status Reg
-BME280_CTRL_MEAS_REG        =	0xF4 # Ctrl Measure Reg
-BME280_CONFIG_REG           =	0xF5 # Configuration Reg
-BME280_PRESSURE_MSB_REG     =	0xF7 # Pressure MSB
-BME280_PRESSURE_LSB_REG     =	0xF8 # Pressure LSB
+BME280_DIG_T1_LSB_REG = 0x88
+BME280_DIG_T1_MSB_REG = 0x89
+BME280_DIG_T2_LSB_REG = 0x8A
+BME280_DIG_T2_MSB_REG = 0x8B
+BME280_DIG_T3_LSB_REG = 0x8C
+BME280_DIG_T3_MSB_REG = 0x8D
+BME280_DIG_P1_LSB_REG = 0x8E
+BME280_DIG_P1_MSB_REG = 0x8F
+BME280_DIG_P2_LSB_REG = 0x90
+BME280_DIG_P2_MSB_REG = 0x91
+BME280_DIG_P3_LSB_REG = 0x92
+BME280_DIG_P3_MSB_REG = 0x93
+BME280_DIG_P4_LSB_REG = 0x94
+BME280_DIG_P4_MSB_REG = 0x95
+BME280_DIG_P5_LSB_REG = 0x96
+BME280_DIG_P5_MSB_REG = 0x97
+BME280_DIG_P6_LSB_REG = 0x98
+BME280_DIG_P6_MSB_REG = 0x99
+BME280_DIG_P7_LSB_REG = 0x9A
+BME280_DIG_P7_MSB_REG = 0x9B
+BME280_DIG_P8_LSB_REG = 0x9C
+BME280_DIG_P8_MSB_REG = 0x9D
+BME280_DIG_P9_LSB_REG = 0x9E
+BME280_DIG_P9_MSB_REG = 0x9F
+BME280_DIG_H1_REG           =   0xA1
+BME280_CHIP_ID_REG          =   0xD0 # Chip ID
+BME280_RST_REG              =   0xE0 # Softreset Reg
+BME280_DIG_H2_LSB_REG       =   0xE1
+BME280_DIG_H2_MSB_REG       =   0xE2
+BME280_DIG_H3_REG           =   0xE3
+BME280_DIG_H4_MSB_REG       =   0xE4
+BME280_DIG_H4_LSB_REG       =   0xE5
+BME280_DIG_H5_MSB_REG       =   0xE6
+BME280_DIG_H6_REG           =   0xE7
+BME280_CTRL_HUMIDITY_REG    =   0xF2 # Ctrl Humidity Reg
+BME280_STAT_REG             =   0xF3 # Status Reg
+BME280_CTRL_MEAS_REG        =   0xF4 # Ctrl Measure Reg
+BME280_CONFIG_REG           =   0xF5 # Configuration Reg
+BME280_PRESSURE_MSB_REG     =   0xF7 # Pressure MSB
+BME280_PRESSURE_LSB_REG     =   0xF8 # Pressure LSB
 BME280_PRESSURE_XLSB_REG    = 0xF9 # Pressure XLSB
 BME280_TEMPERATURE_MSB_REG  = 0xFA # Temperature MSB
 BME280_TEMPERATURE_LSB_REG  = 0xFB # Temperature LSB
-BME280_TEMPERATURE_XLSB_REG =	0xFC # Temperature XLSB
-BME280_HUMIDITY_MSB_REG     =	0xFD # Humidity MSB
-BME280_HUMIDITY_LSB_REG     =	0xFE # Humidity LSB
+BME280_TEMPERATURE_XLSB_REG =   0xFC # Temperature XLSB
+BME280_HUMIDITY_MSB_REG     =   0xFD # Humidity MSB
+BME280_HUMIDITY_LSB_REG     =   0xFE # Humidity LSB
 
-BMEADRS =	0x76        # I2C address of the BME280
+BMEADRS =   0x76        # I2C address of the BME280
 BME280_CHIP_ID = 0x60 # chip ID of the BME280
 
 UNSIGNED = 0
@@ -647,7 +648,7 @@ def parseWeather(line, id):
   wd = []
   wl = line.split(',')
   for l in wl:
-#    print(l)
+    print('\n%s' % l)
     pos = l.find('description":"')
     if pos > 0 and len(weather) == 0:
       weather = l[l.find(':') + 2:len(l) - 1]
@@ -662,12 +663,12 @@ def parseWeather(line, id):
           
     pos = l.find('humidity":')
     if pos > 0:
-      humidity = float(l[l.find(':') + 1:])
-          
+      humidity = float(re.sub('[^.0-9]','',l[l.find(':') + 1:]))
+                
     pos = l.find('speed":')
     if pos > 0:
-      windspeed = float(l[l.rfind(':') + 1:])
-      
+        windspeed = float(re.sub('[^.0-9]','',l[l.rfind(':') + 1:]))
+        
     pos = l.find('deg":')
     if pos > 0:
       l = l.strip('}')
@@ -1468,7 +1469,7 @@ def setup():
   
 #  global log
   
-  print "NTP: " + getNTPTime()
+  #print "NTP: " + getNTPTime()
   
   # initialize the randon number generator
   random.seed()
