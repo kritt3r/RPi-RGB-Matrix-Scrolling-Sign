@@ -147,7 +147,6 @@ from samplebase import SampleBase
 from rgbmatrix import graphics
 from smbus import SMBus
 from string import capwords
-from bs4 import BeautifulSoup
 
 # sensor data variables
 lastPressure = 0
