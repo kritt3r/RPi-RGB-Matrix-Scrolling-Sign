@@ -146,6 +146,7 @@ from socket import AF_INET, SOCK_DGRAM
 from samplebase import SampleBase
 from rgbmatrix import graphics
 from smbus import SMBus
+from string import capwords
 
 # sensor data variables
 lastPressure = 0
@@ -371,7 +372,7 @@ def readOptions(filename):
 # Create a random color
 def randomColor():
   min = 64      # higher numbers yield brighter colors, max is 255
-  max = 255     # low numbers yield dimmer colors.
+  max = 150     # low numbers yield dimmer colors.
   
   r = random.randint(min, max)
   g = random.randint(min, max)
@@ -648,10 +649,10 @@ def parseWeather(line, id):
   wd = []
   wl = line.split(',')
   for l in wl:
-    print('\n%s' % l)
+    print('\nWeather Output:\n%s' % l)
     pos = l.find('description":"')
     if pos > 0 and len(weather) == 0:
-      weather = l[l.find(':') + 2:len(l) - 1]
+      weather = capwords(l[l.find(':') + 2:len(l) - 1])
 
     pos = l.find('temp":')
     if pos > 0:
@@ -1469,7 +1470,7 @@ def setup():
   
 #  global log
   
-  #print "NTP: " + getNTPTime()
+  print "NTP: " + getNTPTime()
   
   # initialize the randon number generator
   random.seed()
