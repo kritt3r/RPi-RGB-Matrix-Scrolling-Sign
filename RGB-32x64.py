@@ -1394,7 +1394,7 @@ class RunText(SampleBase):
     topColor = graphics.Color(255, 255, 0)
     bottomColor = graphics.Color(0, 0, 255)
     
-    pos1 = offscreen_canvas.width
+    pos1 = 0#offscreen_canvas.width
     pos2 = offscreen_canvas.width
     
     my_text = self.args.text
