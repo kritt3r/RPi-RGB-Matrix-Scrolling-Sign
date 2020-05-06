@@ -409,7 +409,7 @@ def dateMessage():
      
   dow = datetime.datetime.today()
   dayname = calendar.day_name[dow.weekday()]
-  text = dayname + ", " + datetime.datetime.now().strftime("%b %d %Y")
+  text = datetime.datetime.now().strftime("%Y-%m-%d") + " " + dayname
 
   # check for change of dow, signals new day
   if lastDow != dow.weekday():
@@ -439,7 +439,6 @@ def timeMessage():
     text = '{:2d}:{:02d}:{:02d}'.format(h, datetime.datetime.now().minute, datetime.datetime.now().second)
   else:
     text = datetime.datetime.now().strftime("%H:%M")
-
   return text
              
 #==============================================================================
@@ -1394,7 +1393,7 @@ class RunText(SampleBase):
     topColor = graphics.Color(255, 255, 0)
     bottomColor = graphics.Color(0, 0, 255)
     counter = 0
-    pos1 = 0
+    pos1 = 5
     pos2 = offscreen_canvas.width / 2
     
     my_text = self.args.text
@@ -1415,7 +1414,7 @@ class RunText(SampleBase):
       # check for message scroll complete
       if (counter % 800 == 1):
         # scroll complete, change message & start scrolling
-        pos1 = 0
+        pos1 = 5
         
         # iterate through topList one message at a time
         topIndex += 1
@@ -1450,8 +1449,7 @@ class RunText(SampleBase):
           
 #        print bottomList[bottomIndex][1]
 
-#      time.sleep(0.05)
-      time.sleep(0.01)
+      time.sleep(0.007)
       offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
 
 #==============================================================================
