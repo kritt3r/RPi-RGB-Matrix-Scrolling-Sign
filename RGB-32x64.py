@@ -1393,9 +1393,9 @@ class RunText(SampleBase):
     # default colors    
     topColor = graphics.Color(255, 255, 0)
     bottomColor = graphics.Color(0, 0, 255)
-    
-    pos1 = 0#offscreen_canvas.width
-    pos2 = offscreen_canvas.width
+    counter = 0
+    pos1 = 0
+    pos2 = offscreen_canvas.width / 2
     
     my_text = self.args.text
 
@@ -1410,11 +1410,12 @@ class RunText(SampleBase):
         
       # determine the pixel length of the message
       msglen = graphics.DrawText(offscreen_canvas, font, pos1, Row1, topColor, msg)
-      pos1 -= 1
+      counter += 1
+      print "Counter: %s" % counter
       # check for message scroll complete
-      if (pos1 + msglen < 0):
+      if (counter % 800 == 1):
         # scroll complete, change message & start scrolling
-        pos1 = offscreen_canvas.width
+        pos1 = 0
         
         # iterate through topList one message at a time
         topIndex += 1
@@ -1450,7 +1451,7 @@ class RunText(SampleBase):
 #        print bottomList[bottomIndex][1]
 
 #      time.sleep(0.05)
-      time.sleep(0.025)
+      time.sleep(0.01)
       offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
 
 #==============================================================================
