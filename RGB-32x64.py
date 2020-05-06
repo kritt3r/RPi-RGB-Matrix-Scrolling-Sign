@@ -372,7 +372,7 @@ def readOptions(filename):
 # Create a random color
 def randomColor():
   min = 64      # higher numbers yield brighter colors, max is 255
-  max = 100     # low numbers yield dimmer colors.
+  max = 255     # low numbers yield dimmer colors.
   
   r = random.randint(min, max)
   g = random.randint(min, max)
@@ -1413,7 +1413,7 @@ class RunText(SampleBase):
       print "Counter: %s" % counter
       # check for message scroll complete
       if (counter % 800 == 1):
-        # scroll complete, change message & start scrolling
+        # Time to switch what we're looking at
         pos1 = 5
         
         # iterate through topList one message at a time
