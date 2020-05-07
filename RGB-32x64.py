@@ -139,7 +139,7 @@ import struct
 import string
 import random
 import re
-import feedparser as fp
+#import feedparser as fp
 
 from HTMLParser import HTMLParser
 from xml.dom import minidom
@@ -901,12 +901,12 @@ def getHeadlines():
         elif url.find('hosted2.ap.org') > 0:
           # parse AP headlines
           headlines = parseAP(r.text)
-        elif url.find('rss') > 0:
-            print '----RUNNING RSS FEED-----'
-            rss_items = fp.parse(url)['items']
-            headlines = []
-            for a in rss_items:
-                headlines.append(a)
+#         elif url.find('rss') > 0:
+#             print '----RUNNING RSS FEED-----'
+#             rss_items = fp.parse(url)['items']
+#             headlines = []
+#             for a in rss_items:
+#                 headlines.append(a)
         else:
           # unknow URL
           print 'Unknown URL: {},  unable to parse'.format(url)
