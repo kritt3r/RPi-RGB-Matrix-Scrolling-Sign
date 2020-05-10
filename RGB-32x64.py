@@ -139,7 +139,6 @@ import struct
 import string
 import random
 import re
-#import feedparser as fp
 
 from HTMLParser import HTMLParser
 from xml.dom import minidom
