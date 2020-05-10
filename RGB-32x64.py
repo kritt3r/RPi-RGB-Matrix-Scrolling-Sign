@@ -373,7 +373,7 @@ def readOptions(filename):
 # Create a random color
 def randomColor():
   min = 64      # higher numbers yield brighter colors, max is 255
-  max = 255     # low numbers yield dimmer colors.
+  max = 150     # low numbers yield dimmer colors.
   
   r = random.randint(min, max)
   g = random.randint(min, max)
@@ -952,7 +952,11 @@ def parseGoogleYahoo(page, key):
   print 'Found {} headlines'.format(len(list))
 
   for hl in list:
-    print hl[1]
+    try:
+      print hl[1]
+    except:
+      print 'weird'
+    
     
   return list        
 
@@ -1417,7 +1421,7 @@ class RunText(SampleBase):
       # determine the pixel length of the message
       msglen = graphics.DrawText(offscreen_canvas, font, pos1, Row1, topColor, msg)
       counter += 1
-      print "Counter: %s" % counter
+      #print "Counter: %s" % counter
       # check for message scroll complete
       if (counter % 800 == 1):
         # Time to switch what we're looking at
