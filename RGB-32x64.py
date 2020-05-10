@@ -885,7 +885,8 @@ def getHeadlines():
     # try to get some headlines
     try:
       print 'Parsing from: {}'.format(url)
-      r = requests.get(url)
+      h = {'User-Agent': 'Raspberry Pi Clock'}
+      r = requests.get(url, headers = h)
     except:
       print 'Failed to connect to URL: {}'.format(url)
       
@@ -901,12 +902,9 @@ def getHeadlines():
         elif url.find('hosted2.ap.org') > 0:
           # parse AP headlines
           headlines = parseAP(r.text)
-#         elif url.find('rss') > 0:
-#             print '----RUNNING RSS FEED-----'
-#             rss_items = fp.parse(url)['items']
-#             headlines = []
-#             for a in rss_items:
-#                 headlines.append(a)
+        elif url.find('rss') > 0:
+          print '----RUNNING RSS FEED-----'
+          headlines = parseReddit(r.text, '<title>')
         else:
           # unknow URL
           print 'Unknown URL: {},  unable to parse'.format(url)
@@ -956,6 +954,34 @@ def parseGoogleYahoo(page, key):
     
   return list        
 
+#==============================================================================
+def parseReddit(page, key):
+  list = []
+  print 'Parsing Headlines from Google or Yahoo'
+  pos = page.find(key)
+  while pos >= 0:
+    # found a headline
+    pos += len(key)
+    pos1 = page.find('</title>', pos)
+    if pos1 > pos:
+      # headline is from pos to pos1
+      try:
+        s = page[pos:pos1]
+        list.append([randomColor(), cleanupUnicode(s)])
+      except:
+        print 'Invalid ascii encoding'
+      
+    pos = page.find(key, pos1)
+  # while
+
+  # add the headlines to the headlines list
+  print '===== Headlines ====='
+  print 'Found {} headlines'.format(len(list))
+
+  for hl in list:
+    print hl[1]
+    
+  return list  
     
 #==============================================================================
 def parseAP(page):
@@ -1533,9 +1559,10 @@ def setup():
 
 #==============================================================================
 # Main function
-
+'''
 setup()
 if __name__ == "__main__":
   run_text = RunText()
   if (not run_text.process()):
     run_text.print_help()
+'''
