@@ -861,6 +861,9 @@ def cleanupUnicode(str):
   str = string.replace(str, '&#x27;', '\'')
   str = string.replace(str, '&#x39;', '9')
   str = string.replace(str, '&#39;', '`')
+  str = string.replace(str, '\u201c', '"')
+  str = string.replace(str, '&quot;', '"')
+  str = string.replace(str, '\u', '\'')
   return str    
 
 #==============================================================================
