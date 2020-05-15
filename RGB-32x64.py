@@ -139,7 +139,6 @@ import struct
 import string
 import random
 import re
-#import feedparser as fp
 
 from HTMLParser import HTMLParser
 from xml.dom import minidom
@@ -148,6 +147,7 @@ from samplebase import SampleBase
 from rgbmatrix import graphics
 from smbus import SMBus
 from string import capwords
+from os import system as sys_py
 
 # sensor data variables
 lastPressure = 0
@@ -373,7 +373,7 @@ def readOptions(filename):
 # Create a random color
 def randomColor():
   min = 64      # higher numbers yield brighter colors, max is 255
-  max = 150     # low numbers yield dimmer colors.
+  max = 100     # low numbers yield dimmer colors.
   
   r = random.randint(min, max)
   g = random.randint(min, max)
@@ -861,6 +861,11 @@ def cleanupUnicode(str):
   str = string.replace(str, '&#x27;', '\'')
   str = string.replace(str, '&#x39;', '9')
   str = string.replace(str, '&#39;', '`')
+  str = string.replace(str, '\u201c', '"')
+  str = string.replace(str, '\u201d', '"')
+  str = string.replace(str, '&quot', '"')
+  str = string.replace(str, '&#39;', '`')
+  str = string.replace(str, '\u', '\'')
   return str    
 
 #==============================================================================
@@ -885,7 +890,8 @@ def getHeadlines():
     # try to get some headlines
     try:
       print 'Parsing from: {}'.format(url)
-      r = requests.get(url)
+      h = {'User-Agent': 'Raspberry Pi Clock'}
+      r = requests.get(url, headers = h)
     except:
       print 'Failed to connect to URL: {}'.format(url)
       
@@ -901,12 +907,9 @@ def getHeadlines():
         elif url.find('hosted2.ap.org') > 0:
           # parse AP headlines
           headlines = parseAP(r.text)
-#         elif url.find('rss') > 0:
-#             print '----RUNNING RSS FEED-----'
-#             rss_items = fp.parse(url)['items']
-#             headlines = []
-#             for a in rss_items:
-#                 headlines.append(a)
+        elif url.find('rss') > 0:
+          print '----RUNNING RSS FEED-----'
+          headlines = parseReddit(r.text, '<title>')
         else:
           # unknow URL
           print 'Unknown URL: {},  unable to parse'.format(url)
@@ -960,6 +963,34 @@ def parseGoogleYahoo(page, key):
     
   return list        
 
+#==============================================================================
+def parseReddit(page, key):
+  list = []
+  print 'Parsing Headlines from Reddit'
+  pos = page.find(key)
+  while pos >= 0:
+    # found a headline
+    pos += len(key)
+    pos1 = page.find('</title>', pos)
+    if pos1 > pos:
+      # headline is from pos to pos1
+      try:
+        s = re.sub('[^.,0-9 A-z]','',page[pos:pos1])
+        list.append([randomColor(), cleanupUnicode(s)])
+      except:
+        print 'Invalid ascii encoding'
+      
+    pos = page.find(key, pos1)
+  # while
+
+  # add the headlines to the headlines list
+  print '===== Headlines ====='
+  print 'Found {} headlines'.format(len(list))
+
+  for hl in list:
+    print hl[1]
+    
+  return list  
     
 #==============================================================================
 def parseAP(page):
@@ -1404,11 +1435,12 @@ class RunText(SampleBase):
     topColor = graphics.Color(255, 255, 0)
     bottomColor = graphics.Color(0, 0, 255)
     counter = 0
+    counter2 = 0
     pos1 = 5
     pos2 = offscreen_canvas.width / 2
     
     my_text = self.args.text
-
+    offset = random.randint(1,5)
     while True:
       offscreen_canvas.Clear()
       
@@ -1423,10 +1455,16 @@ class RunText(SampleBase):
       counter += 1
       #print "Counter: %s" % counter
       # check for message scroll complete
-      if (counter % 800 == 1):
+      if (counter == 1500):
         # Time to switch what we're looking at
-        pos1 = 5
-        
+        print 'switching top'
+        pos1 = 2 + offset
+        offset = random.randint(1,5)
+        counter2 += 1
+        counter = 0
+#         if counter2 > 500:
+#             print '\n\n\nRebooting...\n reached time limit'
+#             sys_py('sudo reboot')
         # iterate through topList one message at a time
         topIndex += 1
         if (len(topList) <= topIndex):
@@ -1460,7 +1498,7 @@ class RunText(SampleBase):
           
 #        print bottomList[bottomIndex][1]
 
-      time.sleep(0.007)
+      time.sleep(0.01)
       offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
 
 #==============================================================================
@@ -1537,7 +1575,6 @@ def setup():
 
 #==============================================================================
 # Main function
-
 setup()
 if __name__ == "__main__":
   run_text = RunText()
